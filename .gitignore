@@ -7,3 +7,6 @@ venv
 */.next
 */node_modules
 */__pycache__/*.cpython-311.pyc
+ai_services/equirightsai-d60b7efc3b73.json
+policy.txt
+*.pyc

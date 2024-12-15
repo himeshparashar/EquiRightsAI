@@ -5,14 +5,79 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Download, FileText, Upload } from "lucide-react";
-import { analyzePolicy } from "@/lib/api";
 import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
+import PolicyAnalysisResults from "./policy-analysis-results";
+
+interface PolicyAnalysisResponse {
+  filename: string;
+  bias_analysis: string;
+  clarity_analysis: string;
+  anonymized_text: string;
+}
+
+async function analyzePolicy(content: string): Promise<PolicyAnalysisResponse> {
+  // Simulate API call delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  // Return dummy data
+  return {
+    filename: "example_policy.txt",
+    bias_analysis: JSON.stringify({
+      identified_biases: [
+        {
+          bias: "Gender Bias",
+          details:
+            "The policy uses gendered language that may exclude certain groups.",
+        },
+        {
+          bias: "Age Discrimination",
+          details: "Some clauses may unfairly impact older employees.",
+        },
+      ],
+      severity_score: {
+        "Gender Bias": 7,
+        "Age Discrimination": 6,
+      },
+      recommendations: [
+        {
+          bias: "Gender Bias",
+          recommendations: "Use gender-neutral language throughout the policy.",
+        },
+        {
+          bias: "Age Discrimination",
+          recommendations:
+            "Review and revise clauses that may disproportionately affect older employees.",
+        },
+      ],
+      overall_score: 6.5,
+    }),
+    clarity_analysis: JSON.stringify({
+      readability_score: 7.2,
+      identified_issues: [
+        {
+          issue: "Complex Language",
+          details:
+            "Several sections use overly complex legal jargon that may be difficult for the average reader to understand.",
+        },
+        {
+          issue: "Ambiguous Terms",
+          details:
+            "The policy contains ambiguous terms that could lead to misinterpretation.",
+        },
+      ],
+      recommendations:
+        "Simplify complex language and define ambiguous terms clearly.",
+    }),
+    anonymized_text:
+      "This is a placeholder for the anonymized version of the policy text.",
+  };
+}
 
 export function PolicyAnalyzer() {
   const [text, setText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState<AnalysisResult | null>(null);
+  const [results, setResults] = useState<PolicyAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,29 +146,46 @@ export function PolicyAnalyzer() {
     yOffset += 10;
 
     doc.setFontSize(12);
-    results.biasedSections.forEach((section, index) => {
-      yOffset += 10;
-      doc.setTextColor(255, 0, 0);
-      doc.text(`Biased Language ${index + 1}:`, 10, yOffset);
+    const biasAnalysis = JSON.parse(
+      results.bias_analysis.replace(/\`\`\`json\n|\n\`\`\`/g, "")
+    );
+    const clarityAnalysis = JSON.parse(
+      results.clarity_analysis.replace(/\`\`\`json\n|\n\`\`\`/g, "")
+    );
+
+    // Add bias analysis
+    doc.text("Bias Analysis", 10, yOffset);
+    yOffset += 10;
+    biasAnalysis.identified_biases.forEach((bias: any, index: number) => {
+      doc.setFontSize(10);
+      doc.text(`${index + 1}. ${bias.bias}`, 15, yOffset);
       yOffset += 5;
-      doc.setTextColor(0, 0, 0);
-      doc.text(section.original, 15, yOffset, { maxWidth: 180 });
-      yOffset +=
-        doc.getTextDimensions(section.original, { maxWidth: 180 }).h + 5;
-      doc.setTextColor(0, 128, 0);
-      doc.text("Suggested Alternative:", 10, yOffset);
+      doc.setFontSize(8);
+      const lines = doc.splitTextToSize(bias.details, 180);
+      doc.text(lines, 20, yOffset);
+      yOffset += lines.length * 4 + 5;
+    });
+
+    // Add clarity analysis
+    yOffset += 10;
+    doc.setFontSize(12);
+    doc.text("Clarity Analysis", 10, yOffset);
+    yOffset += 10;
+    clarityAnalysis.identified_issues.forEach((issue: any, index: number) => {
+      doc.setFontSize(10);
+      doc.text(`${index + 1}. ${issue.issue}`, 15, yOffset);
       yOffset += 5;
-      doc.setTextColor(0, 0, 0);
-      doc.text(section.suggestion, 15, yOffset, { maxWidth: 180 });
-      yOffset +=
-        doc.getTextDimensions(section.suggestion, { maxWidth: 180 }).h + 10;
+      doc.setFontSize(8);
+      const lines = doc.splitTextToSize(issue.details, 180);
+      doc.text(lines, 20, yOffset);
+      yOffset += lines.length * 4 + 5;
     });
 
     doc.save("policy_analysis_report.pdf");
   };
 
   return (
-    <section className="py-20 ">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-6">
           Policy Bias Detector
@@ -113,98 +195,74 @@ export function PolicyAnalyzer() {
           alternatives
         </p>
 
-        <Card className="max-w-3xl mx-auto">
-          <CardContent className="p-6">
-            <div
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors mb-4"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleFileDrop}
-              onClick={handleUploadClick}
-              onKeyUp={handleUploadClick}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-                accept=".txt,.doc,.docx,.pdf"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="lg:col-span-2">
+            <CardContent className="p-6">
+              <div
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors mb-4"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleFileDrop}
+                onClick={handleUploadClick}
+                onKeyUp={handleUploadClick}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                  accept=".txt,.doc,.docx,.pdf"
+                />
+                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+                <p className="text-sm text-gray-600">
+                  Drag and drop your file here, or click to select
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Supported formats: .txt, .doc, .docx, .pdf
+                </p>
+              </div>
+
+              {file && (
+                <p className="mb-4 text-sm text-gray-600">
+                  <FileText className="inline-block mr-2" size={16} />
+                  {file.name}
+                </p>
+              )}
+
+              <p className="mb-2 text-sm text-gray-600">
+                Or paste your text here:
+              </p>
+              <Textarea
+                placeholder="Paste your policy or legal document text here..."
+                className="w-full h-40 mb-4"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
               />
-              <Upload className="mx-auto h-12 w-12 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-600">
-                Drag and drop your file here, or click to select
-              </p>
-              <p className="mt-1 text-xs text-gray-500">
-                Supported formats: .txt, .doc, .docx, .pdf
-              </p>
-            </div>
 
-            {file && (
-              <p className="mb-4 text-sm text-gray-600">
-                <FileText className="inline-block mr-2" size={16} />
-                {file.name}
-              </p>
-            )}
+              <Button
+                className="w-full mb-4"
+                onClick={handleSubmit}
+                disabled={isAnalyzing || (!text && !file)}
+              >
+                {isAnalyzing ? "Analyzing..." : "Analyze for Bias"}
+              </Button>
 
-            <p className="mb-2 text-sm text-gray-600">
-              Or paste your text here:
-            </p>
-            <Textarea
-              placeholder="Paste your policy or legal document text here..."
-              className="w-full h-40 mb-4"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
+              {error && <p className="text-red-500 mb-4">{error}</p>}
+            </CardContent>
+          </Card>
 
-            <Button
-              className="w-full mb-4"
-              onClick={handleSubmit}
-              disabled={isAnalyzing || (!text && !file)}
-            >
-              {isAnalyzing ? "Analyzing..." : "Analyze for Bias"}
-            </Button>
-
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-
-            {results && (
-              <div className="mt-6">
-                <h2 className="text-2xl font-semibold mb-4">
-                  Analysis Results
-                </h2>
-                {results.biasedSections.map((section, index) => (
-                  <div key={index} className="mb-4 p-4 bg-yellow-50 rounded-lg">
-                    <div className="flex items-start">
-                      <AlertTriangle className="text-yellow-500 mr-2 mt-1 flex-shrink-0" />
-                      <div>
-                        <p className="font-semibold">
-                          Potentially biased language detected:
-                        </p>
-                        <p className="mt-1 text-gray-700">{section.original}</p>
-                        <p className="mt-2 font-semibold">
-                          Suggested alternative:
-                        </p>
-                        <p className="mt-1 text-gray-700">
-                          {section.suggestion}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          {results && (
+            <Card className="lg:col-span-2">
+              <CardContent className="p-6">
+                <PolicyAnalysisResults results={results} />
                 <Button onClick={handleDownload} className="mt-4">
                   <Download className="mr-2" size={16} />
                   Download Analysis Report (PDF)
                 </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </section>
   );
-}
-
-interface AnalysisResult {
-  biasedSections: {
-    original: string;
-    suggestion: string;
-  }[];
 }

@@ -1,7 +1,7 @@
 # ai_services/app/v1/router/resume_analysis.py
 
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 from app.v1.services.resume_analysis.resume_extraction import ResumeExtractor
 from app.v1.services.resume_analysis.resume_analysis_service import analyze_resume
@@ -13,7 +13,7 @@ class ResumeAnalysisResponse(BaseModel):
     extracted_text: str
     file_type: str
     anonymized_text: Optional[str] = None
-    skills: Optional[list[str]] = None
+    skills: Optional[List[str]] = None
     summary: Optional[str] = None
 
 

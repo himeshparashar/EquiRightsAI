@@ -1,11 +1,15 @@
 export async function analyzePolicy(text: string): Promise<AnalysisResult> {
-  const response = await fetch("http://localhost:8000/analyse_policy", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text }),
-  });
+  const formData = new FormData();
+  const file = new Blob([text], { type: "text/plain" });
+  formData.append("file", file, "policy.txt");
+
+  const response = await fetch(
+    "http://localhost:8000/api/v1/policy-analysis/",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to analyze policy");

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.v1.routers import policy_analysis_router
 from app.v1.routers import resume_analysis_router
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,9 +27,11 @@ app.include_router(
     prefix="/api/v1/resume-analysis",
     tags=["Resume Analysis"],
 )
-# app.include_router(
-#     policy_analysis.router, prefix="/api/v1/policy-analysis", tags=["Policy Analysis"]
-# )
+app.include_router(
+    policy_analysis_router.router,
+    prefix="/api/v1/policy-analysis",
+    tags=["Policy Analysis"],
+)
 # app.include_router(
 #     discrimination_reporting.router,
 #     prefix="/api/v1/reporting",

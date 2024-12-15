@@ -1,8 +1,8 @@
 # ai_services/app/v1/routers/policy_analysis.py
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
+from app.v1.services.policy_analysis import analyze_policy_file
 from app.v1.models.response_models import PolicyAnalysisResponse
-from app.services.policy_analysis_service import analyze_policy_file
 
 router = APIRouter()
 

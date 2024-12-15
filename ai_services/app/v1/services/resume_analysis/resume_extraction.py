@@ -33,31 +33,6 @@ class ResumeExtractor:
                 detail=f"Failed to initialize Google Cloud Vision: {str(e)}",
             )
 
-    def extract_from_url(self, url: str) -> tuple[str, str]:
-        """Extract text from a document URL."""
-        headers = {
-            "Accept": "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        }
-
-        try:
-            response = requests.get(url, headers=headers)
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=400, detail="Could not fetch document content."
-                )
-
-            file_type = url.split(".")[-1].lower()
-            content = response.content
-
-            extracted_text = self.extract_from_bytes(content, file_type)
-            return extracted_text, file_type
-
-        except Exception as e:
-            raise HTTPException(
-                status_code=500, detail=f"Error processing URL: {str(e)}"
-            )
-
     def extract_from_bytes(self, content: bytes, file_type: str) -> str:
         """Extract text from bytes based on file type."""
         try:

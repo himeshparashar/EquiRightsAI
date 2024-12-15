@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    env_file:
+      - frontend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      # - backend
+      - ai_services
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/backend.Dockerfile
+  #   ports:
+  #     - "5000:5000"
+  #   env_file:
+  #     - backend/.env
+  #   depends_on:
+  #     - ai_services
+  #     - database
+
+  ai_services:
+    build:
+      context: .
+      dockerfile: docker/ai_services.Dockerfile
+    ports:
+      - "8000:8000"
+    # depends_on:
+    # - database
+
+  # database:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_USER: yourusername
+  #     POSTGRES_PASSWORD: yourpassword
+  #     POSTGRES_DB: equirightsai
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+# volumes:
+#   db_data:
