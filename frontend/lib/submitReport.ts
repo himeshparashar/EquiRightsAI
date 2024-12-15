@@ -1,17 +1,21 @@
-"use server";
-
-import { revalidatePath } from "next/cache";
-
 export async function submitReport(formData: FormData) {
-  // Simulate a delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  try {
+    const response = await fetch("/api/submit-report", {
+      method: "POST",
+      body: formData,
+    });
 
-  // Here you would typically save the report to a database
-  // For this example, we'll just generate a random case number
-  const caseNumber = Math.random().toString(36).substr(2, 9).toUpperCase();
+    const data = await response.json();
 
-  // Revalidate the confirmation page
-  revalidatePath("/confirmation/[caseNumber]");
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong");
+    }
 
-  return { success: true, caseNumber };
+    // Navigate to the confirmation page with the case number as a query parameter
+    window.location.href = `/help/reporting/confirmation?caseNumber=${data.caseNumber}`;
+    return data;
+  } catch (error) {
+    console.error("Error submitting report:", error);
+    throw error;
+  }
 }

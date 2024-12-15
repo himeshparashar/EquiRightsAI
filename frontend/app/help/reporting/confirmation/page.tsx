@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,14 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export const dynamic = "force-dynamic";
+function ConfirmationContent() {
+  const searchParams = useSearchParams();
+  const caseNumber = searchParams.get("caseNumber");
 
-export default function ConfirmationPage({
-  params,
-}: {
-  params: { caseNumber: string };
-}) {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -33,7 +34,7 @@ export default function ConfirmationPage({
                 Your report has been successfully submitted.
               </p>
               <p className="text-green-800 font-semibold">
-                Your case reference number is: {params.caseNumber}
+                Your case reference number is: {caseNumber}
               </p>
             </div>
             <div className="space-y-4">
@@ -60,5 +61,13 @@ export default function ConfirmationPage({
         </Card>
       </main>
     </div>
+  );
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfirmationContent />
+    </Suspense>
   );
 }
