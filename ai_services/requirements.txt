@@ -1,9 +1,12 @@
-fastapi==0.68.1
-uvicorn==0.15.0
-python-multipart==0.0.5
-python-docx==0.8.11
-PyMuPDF==1.19.6
-google-cloud-vision==3.4.4
-python-dotenv==0.19.0
-requests==2.28.1
-aiofiles==0.8.0
+fastapi
+uvicorn
+python-multipart
+python-docx
+# PyMuPDF
+google-cloud-vision
+python-dotenv
+requests
+aiofiles
+python-dotenv
+paddleocr>=2.0.1
+PyMuPDF==1.21.1
