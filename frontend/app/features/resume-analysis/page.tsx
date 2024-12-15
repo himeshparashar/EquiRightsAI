@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 
 export default function ResumeAnalysisPage() {
   return (
-    <div className="container py-8">
+    <div className="container py-8 pl-10 pr-10">
       <PageHeader
         title="Resume Analysis"
         description="Fair and unbiased evaluation of job applications"

@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 
 export default function HelpPage() {
   return (
-    <div className="container py-8">
+    <div className="container mx-auto px-4 py-8">
       <PageHeader
         title="Help & Support"
         description="Get assistance and learn more about using our platform"

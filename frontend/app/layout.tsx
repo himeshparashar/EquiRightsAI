@@ -26,9 +26,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col ml-10 mr-10">
+          <div className="flex min-h-screen flex-col  ">
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 bg-gradient-to-b from-blue-50 to-white">
+              {children}
+            </main>
             <Footer />
           </div>
         </ThemeProvider>

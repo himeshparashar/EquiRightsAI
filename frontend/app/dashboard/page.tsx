@@ -1,14 +1,17 @@
-import DashboardOverview from "@/components/dashboard/dashboard-overview";
-import { PageHeader } from "@/components/page-header";
+import AnalysisOptions from "@/components/dashboard/AnalysisOptions";
+import CTA from "@/components/dashboard/CTA";
+import DataInput from "@/components/dashboard/DataInput";
+import Hero from "@/components/dashboard/Hero";
+import ResultsPreview from "@/components/dashboard/ResultsPreview";
 
-export default function DashboardPage() {
+export default function Home() {
   return (
-    <div className="container py-8">
-      <PageHeader
-        title="Dashboard"
-        description="Track and analyze your organization's equity metrics"
-      />
-      <DashboardOverview />
-    </div>
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <Hero />
+      <DataInput />
+      <AnalysisOptions />
+      <ResultsPreview />
+      <CTA />
+    </main>
   );
 }

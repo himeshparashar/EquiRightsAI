@@ -5,7 +5,8 @@ import Link from "next/link";
 const features = [
   {
     title: "Resume Analysis",
-    description: "Evaluate candidates fairly based on skills and qualifications",
+    description:
+      "Evaluate candidates fairly based on skills and qualifications",
     icon: FileText,
     href: "/features/resume-analysis",
   },
@@ -25,7 +26,7 @@ const features = [
     title: "Report Discrimination",
     description: "Securely report and track discrimination cases",
     icon: BarChart2,
-    href: "/features/report",
+    href: "/help/reporting",
   },
 ];
 

@@ -4,7 +4,7 @@ import { ArrowRight, BarChart2, FileText, Scale, Shield } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pl-10 pr-10">
       {/* Hero Section */}
       <section className="relative">
         <div className="container flex flex-col items-center justify-center space-y-8 py-24 text-center md:py-32">
@@ -15,7 +15,8 @@ export default function Home() {
           </h1>
           <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
             EquiRightsAI helps organizations eliminate bias and promote equality
-            through advanced AI analysis of resumes, policies, and workplace practices.
+            through advanced AI analysis of resumes, policies, and workplace
+            practices.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
             <Button size="lg" asChild>
@@ -31,7 +32,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="border-t bg-muted/40">
+      <section className="border-t bg-muted/20">
         <div className="container py-24">
           <h2 className="mb-12 text-center text-3xl font-bold tracking-tighter sm:text-4xl">
             Our Key Features
@@ -59,7 +60,7 @@ export default function Home() {
               icon={BarChart2}
               title="Report Discrimination"
               description="Securely report and track discrimination cases"
-              href="/features/report"
+              href="/help/reporting"
             />
           </div>
         </div>

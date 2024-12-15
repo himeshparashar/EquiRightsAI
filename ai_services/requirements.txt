@@ -10,3 +10,4 @@ aiofiles
 python-dotenv
 paddleocr>=2.0.1
 PyMuPDF==1.21.1
+google-cloud-aiplatform>=1.64

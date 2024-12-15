@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 
 export default function FeaturesPage() {
   return (
-    <div className="container py-8">
+    <div className="container py-8 pl-10 pr-10">
       <PageHeader
         title="Our Features"
         description="Explore our comprehensive suite of tools designed to promote fairness and equality"
