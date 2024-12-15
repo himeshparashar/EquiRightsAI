@@ -1,13 +1,23 @@
 from fastapi import FastAPI
 from app.v1.routers import resume_analysis_router
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
 
 app = FastAPI(
     title="EquiRightsAI API",
     version="1.0.0",
     description="API for EquiRightsAI services",
+)
+load_dotenv()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your frontend's origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include routers
